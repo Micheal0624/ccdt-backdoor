@@ -1,0 +1,60 @@
+========================================================================================================================
+HARD ABLATION 288 FINAL SUMMARY
+========================================================================================================================
+Expected runs:           288
+Valid complete runs:     288
+Issue count:             0
+Leakage v2 coverage:     288/288
+READY_FOR_PAPER_SUMMARY: YES
+
+========================================================================================================================
+FULL FIXED-WEIGHT CCDT: MEAN ± STD
+========================================================================================================================
+cifar10   | resnet18 | Kc=4 | PR=0.01 | clean_acc=93.810%±0.026% | valid_asr=99.857%±0.076% | wrong_asr=0.115%±0.045% | single_leak=1.944%±0.160% | invalid_leak=2.250%±0.124% | csg=97.607%±0.086%
+cifar10   | resnet18 | Kc=4 | PR=0.05 | clean_acc=94.030%±0.052% | valid_asr=99.998%±0.003% | wrong_asr=0.000%±0.000% | single_leak=1.106%±0.115% | invalid_leak=1.593%±0.101% | csg=98.405%±0.104%
+cifar10   | resnet18 | Kc=8 | PR=0.01 | clean_acc=93.970%±0.105% | valid_asr=99.416%±0.199% | wrong_asr=0.930%±0.141% | single_leak=3.391%±0.210% | invalid_leak=4.980%±0.360% | csg=94.435%±0.384%
+cifar10   | resnet18 | Kc=8 | PR=0.05 | clean_acc=94.053%±0.100% | valid_asr=99.987%±0.006% | wrong_asr=0.030%±0.017% | single_leak=2.081%±0.189% | invalid_leak=3.189%±0.294% | csg=96.797%±0.299%
+cifar10   | vgg11    | Kc=4 | PR=0.01 | clean_acc=90.473%±0.127% | valid_asr=98.429%±0.456% | wrong_asr=0.867%±0.436% | single_leak=4.032%±0.403% | invalid_leak=5.189%±0.508% | csg=93.240%±0.475%
+cifar10   | vgg11    | Kc=4 | PR=0.05 | clean_acc=90.613%±0.278% | valid_asr=99.890%±0.043% | wrong_asr=0.100%±0.033% | single_leak=2.423%±0.097% | invalid_leak=3.046%±0.093% | csg=96.844%±0.075%
+cifar10   | vgg11    | Kc=8 | PR=0.01 | clean_acc=90.800%±0.210% | valid_asr=97.658%±0.599% | wrong_asr=3.344%±0.646% | single_leak=8.754%±0.423% | invalid_leak=12.825%±0.033% | csg=84.833%±0.624%
+cifar10   | vgg11    | Kc=8 | PR=0.05 | clean_acc=90.480%±0.180% | valid_asr=99.894%±0.027% | wrong_asr=0.152%±0.045% | single_leak=4.728%±0.116% | invalid_leak=7.211%±0.306% | csg=92.683%±0.321%
+cifar100  | resnet18 | Kc=4 | PR=0.01 | clean_acc=76.073%±0.227% | valid_asr=99.197%±0.170% | wrong_asr=0.040%±0.027% | single_leak=1.149%±0.305% | invalid_leak=0.673%±0.120% | csg=98.048%±0.249%
+cifar100  | resnet18 | Kc=4 | PR=0.05 | clean_acc=76.293%±0.081% | valid_asr=99.934%±0.028% | wrong_asr=0.003%±0.006% | single_leak=0.417%±0.022% | invalid_leak=0.456%±0.024% | csg=99.478%±0.027%
+cifar100  | resnet18 | Kc=8 | PR=0.01 | clean_acc=76.543%±0.136% | valid_asr=98.025%±0.422% | wrong_asr=0.296%±0.102% | single_leak=2.172%±0.051% | invalid_leak=1.685%±0.257% | csg=95.853%±0.390%
+cifar100  | resnet18 | Kc=8 | PR=0.05 | clean_acc=76.150%±0.089% | valid_asr=99.867%±0.059% | wrong_asr=0.034%±0.006% | single_leak=0.854%±0.157% | invalid_leak=1.071%±0.177% | csg=98.795%±0.158%
+cifar100  | vgg11    | Kc=4 | PR=0.01 | clean_acc=68.580%±0.231% | valid_asr=98.809%±0.227% | wrong_asr=0.057%±0.012% | single_leak=1.813%±0.142% | invalid_leak=1.057%±0.252% | csg=96.996%±0.161%
+cifar100  | vgg11    | Kc=4 | PR=0.05 | clean_acc=68.700%±0.135% | valid_asr=99.934%±0.033% | wrong_asr=0.007%±0.012% | single_leak=0.615%±0.077% | invalid_leak=0.705%±0.047% | csg=99.228%±0.055%
+cifar100  | vgg11    | Kc=8 | PR=0.01 | clean_acc=68.657%±0.021% | valid_asr=97.991%±0.517% | wrong_asr=0.290%±0.057% | single_leak=3.388%±0.217% | invalid_leak=2.681%±0.403% | csg=94.603%±0.533%
+cifar100  | vgg11    | Kc=8 | PR=0.05 | clean_acc=68.057%±0.176% | valid_asr=99.822%±0.035% | wrong_asr=0.017%±0.006% | single_leak=1.187%±0.204% | invalid_leak=1.565%±0.272% | csg=98.257%±0.246%
+gtsrb     | resnet18 | Kc=4 | PR=0.01 | clean_acc=98.522%±0.183% | valid_asr=99.994%±0.002% | wrong_asr=0.008%±0.014% | single_leak=0.485%±0.134% | invalid_leak=0.292%±0.075% | csg=99.509%±0.136%
+gtsrb     | resnet18 | Kc=4 | PR=0.05 | clean_acc=98.749%±0.158% | valid_asr=100.000%±0.000% | wrong_asr=0.000%±0.000% | single_leak=0.058%±0.005% | invalid_leak=0.065%±0.030% | csg=99.929%±0.025%
+gtsrb     | resnet18 | Kc=8 | PR=0.01 | clean_acc=98.416%±0.265% | valid_asr=98.113%±0.261% | wrong_asr=0.894%±0.611% | single_leak=0.478%±0.124% | invalid_leak=0.329%±0.127% | csg=97.133%±0.580%
+gtsrb     | resnet18 | Kc=8 | PR=0.05 | clean_acc=98.577%±0.069% | valid_asr=99.999%±0.001% | wrong_asr=0.000%±0.000% | single_leak=0.066%±0.008% | invalid_leak=0.082%±0.014% | csg=99.917%±0.015%
+gtsrb     | vgg11    | Kc=4 | PR=0.01 | clean_acc=96.962%±0.115% | valid_asr=99.319%±0.370% | wrong_asr=0.056%±0.076% | single_leak=1.126%±0.342% | invalid_leak=0.430%±0.056% | csg=98.192%±0.672%
+gtsrb     | vgg11    | Kc=4 | PR=0.05 | clean_acc=96.912%±0.078% | valid_asr=100.000%±0.000% | wrong_asr=0.000%±0.000% | single_leak=0.184%±0.035% | invalid_leak=0.258%±0.029% | csg=99.742%±0.029%
+gtsrb     | vgg11    | Kc=8 | PR=0.01 | clean_acc=96.997%±0.151% | valid_asr=93.345%±1.456% | wrong_asr=1.866%±1.886% | single_leak=2.254%±0.316% | invalid_leak=2.247%±0.072% | csg=90.408%±2.399%
+gtsrb     | vgg11    | Kc=8 | PR=0.05 | clean_acc=97.279%±0.186% | valid_asr=99.954%±0.024% | wrong_asr=0.025%±0.025% | single_leak=0.338%±0.044% | invalid_leak=0.458%±0.085% | csg=99.496%±0.094%
+
+========================================================================================================================
+FULL METHOD RISK CHECK
+========================================================================================================================
+Thresholds: ValidASR<95%, CSG<85%, WrongASR>2%, SingleLeak>15%, InvalidLeak>15%
+Risk runs: 6
+                               run_name dataset model  kc  poison_rate  seed  clean_acc  valid_asr  wrong_asr  single_leak  invalid_leak      csg
+cifar10_vgg11_full_dyn_pr0.01_kc8_seed0 cifar10 vgg11   8         0.01     0   0.905900   0.983361   0.026778     0.084131      0.128025 0.855336
+cifar10_vgg11_full_dyn_pr0.01_kc8_seed1 cifar10 vgg11   8         0.01     1   0.908000   0.974389   0.033889     0.086200      0.128104 0.846285
+cifar10_vgg11_full_dyn_pr0.01_kc8_seed2 cifar10 vgg11   8         0.01     2   0.910100   0.972000   0.039667     0.092275      0.128634 0.843366
+  gtsrb_vgg11_full_dyn_pr0.01_kc8_seed0   gtsrb vgg11   8         0.01     0   0.970546   0.945679   0.006734     0.018898      0.023173 0.922506
+  gtsrb_vgg11_full_dyn_pr0.01_kc8_seed1   gtsrb vgg11   8         0.01     1   0.968250   0.937330   0.008838     0.024540      0.022499 0.912791
+  gtsrb_vgg11_full_dyn_pr0.01_kc8_seed2   gtsrb vgg11   8         0.01     2   0.971101   0.917351   0.040394     0.024183      0.021744 0.876956
+
+========================================================================================================================
+GENERATED FILES
+========================================================================================================================
+./paper_results/hard_ablation_288/hard_ablation_288_runs.csv
+./paper_results/hard_ablation_288/hard_ablation_288_grouped.csv
+./paper_results/hard_ablation_288/hard_ablation_288_paper_table.csv
+./paper_results/hard_ablation_288/hard_ablation_288_paired_deltas.csv
+./paper_results/hard_ablation_288/hard_ablation_288_paired_deltas_grouped.csv
+./paper_results/hard_ablation_288/hard_ablation_288_full_risk_runs.csv
+./paper_results/hard_ablation_288/hard_ablation_288_issues.csv

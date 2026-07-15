@@ -1,0 +1,11 @@
+numpy==1.26.4
+pandas
+matplotlib
+scikit-learn
+tqdm
+pyyaml
+opencv-python
+pillow
+tensorboard
+torch
+torchvision

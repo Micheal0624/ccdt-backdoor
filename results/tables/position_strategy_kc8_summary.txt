@@ -1,0 +1,43 @@
+========================================================================================================================
+Kc=8 Position Strategy Comparison: Fixed vs Fixed-Diverse vs Dynamic
+========================================================================================================================
+
+cifar10 / resnet18
+  fixed          ACC=94.220% | ASR=19.357% | Wrong=63.515% | Single=1.486% | Invalid=8.454% | CSG=-44.157%
+  fixed_diverse  ACC=94.050% | ASR=99.987% | Wrong=0.041% | Single=2.164% | Invalid=3.628% | CSG=96.358%
+  dynamic        ACC=94.053% | ASR=99.987% | Wrong=0.044% | Single=2.045% | Invalid=3.204% | CSG=96.783%
+
+cifar10 / vgg11
+  fixed          ACC=90.563% | ASR=25.204% | Wrong=57.489% | Single=3.331% | Invalid=12.113% | CSG=-32.285%
+  fixed_diverse  ACC=90.767% | ASR=99.917% | Wrong=0.148% | Single=5.066% | Invalid=7.821% | CSG=92.095%
+  dynamic        ACC=90.480% | ASR=99.870% | Wrong=0.226% | Single=4.743% | Invalid=7.183% | CSG=92.688%
+
+cifar100 / resnet18
+  fixed          ACC=76.590% | ASR=57.544% | Wrong=3.323% | Single=1.433% | Invalid=25.008% | CSG=32.536%
+  fixed_diverse  ACC=76.147% | ASR=99.872% | Wrong=0.071% | Single=1.072% | Invalid=1.193% | CSG=98.666%
+  dynamic        ACC=76.150% | ASR=99.875% | Wrong=0.030% | Single=0.827% | Invalid=1.092% | CSG=98.783%
+
+cifar100 / vgg11
+  fixed          ACC=68.360% | ASR=68.620% | Wrong=2.114% | Single=2.310% | Invalid=29.893% | CSG=38.727%
+  fixed_diverse  ACC=67.800% | ASR=99.862% | Wrong=0.030% | Single=1.335% | Invalid=1.777% | CSG=98.085%
+  dynamic        ACC=68.057% | ASR=99.806% | Wrong=0.030% | Single=1.343% | Invalid=1.770% | CSG=98.036%
+
+gtsrb / resnet18
+  fixed          ACC=98.519% | ASR=9.724% | Wrong=27.137% | Single=0.167% | Invalid=4.097% | CSG=-17.412%
+  fixed_diverse  ACC=98.554% | ASR=100.000% | Wrong=0.000% | Single=0.102% | Invalid=0.144% | CSG=99.856%
+  dynamic        ACC=98.577% | ASR=100.000% | Wrong=0.000% | Single=0.088% | Invalid=0.114% | CSG=99.886%
+
+gtsrb / vgg11
+  fixed          ACC=96.973% | ASR=18.797% | Wrong=24.848% | Single=0.556% | Invalid=8.031% | CSG=-6.051%
+  fixed_diverse  ACC=97.208% | ASR=99.909% | Wrong=0.055% | Single=0.408% | Invalid=0.604% | CSG=99.305%
+  dynamic        ACC=97.279% | ASR=99.979% | Wrong=0.042% | Single=0.335% | Invalid=0.507% | CSG=99.472%
+
+========================================================================================================================
+Average over all six dataset/model settings
+========================================================================================================================
+dynamic        ACC=87.433% | ASR=99.920% | Wrong=0.062% | Single=1.564% | Invalid=2.312% | CSG=97.608%
+fixed          ACC=87.538% | ASR=33.208% | Wrong=29.738% | Single=1.547% | Invalid=14.599% | CSG=-4.774%
+fixed_diverse  ACC=87.421% | ASR=99.924% | Wrong=0.057% | Single=1.691% | Invalid=2.528% | CSG=97.394%
+
+Saved: position_strategy_kc8_runs.csv
+Saved: position_strategy_kc8_summary.txt

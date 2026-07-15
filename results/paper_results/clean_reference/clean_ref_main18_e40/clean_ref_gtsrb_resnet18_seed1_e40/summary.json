@@ -1,0 +1,13 @@
+{
+  "dataset": "gtsrb",
+  "model": "resnet18",
+  "num_classes": 43,
+  "seed": 1,
+  "epochs": 40,
+  "batch_size": 128,
+  "num_workers": 4,
+  "lr": 0.01,
+  "clean_acc": 0.9269992082343627,
+  "clean_loss": 0.32968139116130973,
+  "ckpt": "paper_results/clean_reference/clean_ref_main18_e40/clean_ref_gtsrb_resnet18_seed1_e40/clean_classifier.pt"
+}

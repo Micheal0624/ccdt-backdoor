@@ -1,0 +1,13 @@
+{
+  "dataset": "cifar100",
+  "model": "resnet18",
+  "num_classes": 100,
+  "seed": 1,
+  "epochs": 40,
+  "batch_size": 128,
+  "num_workers": 4,
+  "lr": 0.01,
+  "clean_acc": 0.6606,
+  "clean_loss": 1.6427309436798097,
+  "ckpt": "paper_results/clean_reference/clean_ref_main18_e40/clean_ref_cifar100_resnet18_seed1_e40/clean_classifier.pt"
+}

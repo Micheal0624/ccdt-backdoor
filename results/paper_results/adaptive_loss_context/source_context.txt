@@ -1,0 +1,1146 @@
+================ PROJECT TREE ================
+configs/cifar100_resnet18.yaml
+configs/cifar100_vgg11.yaml
+configs/cifar10_resnet18.yaml
+configs/cifar10_vgg11.yaml
+configs/gtsrb_resnet18.yaml
+configs/gtsrb_vgg11.yaml
+src/.ipynb_checkpoints/__pycache__/datasets-checkpoint.cpython-310.pyc
+src/.ipynb_checkpoints/__pycache__/evaluate-checkpoint.cpython-310.pyc
+src/.ipynb_checkpoints/__pycache__/metrics-checkpoint.cpython-310.pyc
+src/.ipynb_checkpoints/datasets-checkpoint.py
+src/.ipynb_checkpoints/evaluate-checkpoint.py
+src/.ipynb_checkpoints/evaluate.py-checkpoint.bak_before_universal_leakage_20260614_020307
+src/.ipynb_checkpoints/metrics-checkpoint.py
+src/__init__.py
+src/__pycache__/__init__.cpython-310.pyc
+src/__pycache__/config_search.cpython-310.pyc
+src/__pycache__/datasets.cpython-310.pyc
+src/__pycache__/evaluate.cpython-310.pyc
+src/__pycache__/metrics.cpython-310.pyc
+src/__pycache__/models.cpython-310.pyc
+src/__pycache__/poison.cpython-310.pyc
+src/__pycache__/train.cpython-310.pyc
+src/__pycache__/triggers.cpython-310.pyc
+src/__pycache__/utils.cpython-310.pyc
+src/config_search.py
+src/config_search.py.bak_before_diverse_kc
+src/config_search.py.broken_20260529_134657
+src/datasets.py
+src/defenses/__init__.py
+src/defenses/__pycache__/__init__.cpython-310.pyc
+src/defenses/__pycache__/fine_pruning.cpython-310.pyc
+src/defenses/__pycache__/neural_cleanse.cpython-310.pyc
+src/defenses/__pycache__/spectral_signatures.cpython-310.pyc
+src/defenses/__pycache__/strip.cpython-310.pyc
+src/defenses/fine_pruning.py
+src/defenses/neural_cleanse.py
+src/defenses/spectral_signatures.py
+src/defenses/strip.py
+src/evaluate.py
+src/evaluate.py.bak_before_universal_leakage_20260614_020307
+src/metrics.py
+src/models.py
+src/poison.py
+src/train.py
+src/train.py.bak_disable_best_20260616_102634
+src/train.py.bak_fdiv_repair_20260614_204904
+src/train.py.bak_fixed_diverse_20260614_204323
+src/triggers.py
+src/triggers.py.bak_before_fixed_kc8_20260614_115812
+src/triggers.py.bak_fixed_diverse_20260614_204323
+src/utils.py
+tools/__pycache__/evaluate_common_out_of_library_invalid.cpython-310.pyc
+tools/__pycache__/evaluate_out_of_library_invalid.cpython-310.pyc
+tools/__pycache__/recover_static_dynamic_missing.cpython-310.pyc
+tools/__pycache__/reevaluate_leakage_v2.cpython-310.pyc
+tools/__pycache__/reevaluate_static_dynamic_v2.cpython-310.pyc
+tools/__pycache__/rerun_fixed_kc8.cpython-310.pyc
+tools/__pycache__/run_defense_eval.cpython-310.pyc
+tools/__pycache__/run_fixed_diverse_kc8.cpython-310.pyc
+tools/__pycache__/summarize_hard_ablation_288.cpython-310.pyc
+tools/aggregate_anomaly.py
+tools/aggregate_results.py
+tools/aggregate_scalability.py
+tools/ccdt_status.sh
+tools/diagnose_kc_position_conflicts.py
+tools/evaluate_common_out_of_library_invalid.py
+tools/evaluate_out_of_library_invalid.py
+tools/inspect_checkpoint_format.py
+tools/inspect_per_config_requirements.py
+tools/make_ccdt_experiment_figures_matrix_v2.py
+tools/make_ccdt_experiment_figures_pub_v3.py
+tools/make_ccdt_experiment_figures_pub_v4.py
+tools/make_ccdt_experiment_figures_pub_v5.py
+tools/make_ccdt_experiment_figures_v1.py
+tools/make_ccdt_fig3_fig4_final_v4.py
+tools/make_ccdt_fig3_fig4_style_v5.py
+tools/make_ccdt_fig3_fig4_style_v6.py
+tools/make_ccdt_nonexp_all_style_v8.py
+tools/make_ccdt_nonexp_figures_academic.backup.py
+tools/make_ccdt_nonexp_figures_academic.bad_v2.py
+tools/make_ccdt_nonexp_figures_academic.py
+tools/make_ccdt_nonexp_four_main_final.py
+tools/make_ccdt_pipeline_three_stage_v7.py
+tools/make_defense_manifest.py
+tools/make_tables.py
+tools/patch_evaluate_universal_leakage.py
+tools/plot_confusion_matrix.py
+tools/plot_main_results.py
+tools/prune_completed_hard_ablation_best.py
+tools/recover_dynamic_config_positions.py
+tools/recover_static_dynamic_missing.py
+tools/reevaluate_leakage_v2.py
+tools/reevaluate_leakage_v2.py.bak_20260614_024028
+tools/reevaluate_static_dynamic_v2.py
+tools/rerun_fixed_kc8.py
+tools/run_defense_eval.py
+tools/run_defense_eval.py.bak_before_ss_fix
+tools/run_defense_eval.py.bak_before_ss_mixed_fix
+tools/run_extra_experiments.py
+tools/run_fixed_diverse_kc8.py
+tools/run_hard_ablation_288.sh
+tools/summarize_hard_ablation_288.py
+tools/summarize_per_config_from_summaries.py
+
+================ TRAIN.PY ================
+     1	import argparse
+     2	import csv
+     3	import os
+     4	import time
+     5	from typing import Dict
+     6	
+     7	import torch
+     8	import torch.nn as nn
+     9	from torch.cuda.amp import GradScaler, autocast
+    10	from torch.utils.data import DataLoader
+    11	from tqdm import tqdm
+    12	
+    13	from .datasets import get_datasets
+    14	from .evaluate import evaluate_all
+    15	from .models import get_model
+    16	from .poison import CCDTPoisonedDataset, make_poison_index_splits
+    17	from .triggers import get_default_configs, get_fixed_diverse_configs
+    18	from .config_search import search_dynamic_configs
+    19	from .utils import ensure_dir, get_device, load_yaml, save_json, set_seed
+    20	
+    21	
+    22	def parse_args():
+    23	    parser = argparse.ArgumentParser()
+    24	    parser.add_argument("--config", type=str, required=True)
+    25	    parser.add_argument("--method", type=str, default="full",
+    26	                        choices=["single", "naive_dual", "wo_invalid", "full"])
+    27	    parser.add_argument("--poison-rate", type=float, default=0.05)
+    28	    parser.add_argument("--seed", type=int, default=0)
+    29	    parser.add_argument("--kc", type=int, default=None)
+    30	    parser.add_argument("--position-mode", type=str, default="fixed", choices=["fixed", "fixed_diverse", "dynamic"])
+    31	    parser.add_argument("--search-grid", type=int, default=4)
+    32	    parser.add_argument("--search-subset", type=int, default=2048)
+    33	    parser.add_argument("--epochs", type=int, default=None)
+    34	    parser.add_argument("--batch-size", type=int, default=None)
+    35	    parser.add_argument("--lr", type=float, default=None)
+    36	    return parser.parse_args()
+    37	
+    38	
+    39	def train_one_epoch(
+    40	    model,
+    41	    loader,
+    42	    optimizer,
+    43	    criterion,
+    44	    device,
+    45	    scaler,
+    46	    epoch,
+    47	):
+    48	    model.train()
+    49	
+    50	    total_loss = 0.0
+    51	    total_num = 0
+    52	    correct = 0
+    53	
+    54	    pbar = tqdm(loader, desc=f"Train epoch {epoch}", ncols=100)
+    55	
+    56	    for x, y in pbar:
+    57	        x = x.to(device, non_blocking=True)
+    58	        y = y.to(device, non_blocking=True)
+    59	
+    60	        optimizer.zero_grad(set_to_none=True)
+    61	
+    62	        with autocast(enabled=device.type == "cuda"):
+    63	            logits = model(x)
+    64	            loss = criterion(logits, y)
+    65	
+    66	        scaler.scale(loss).backward()
+    67	        scaler.step(optimizer)
+    68	        scaler.update()
+    69	
+    70	        bs = y.size(0)
+    71	        total_loss += loss.item() * bs
+    72	        total_num += bs
+    73	        correct += (logits.argmax(dim=1) == y).sum().item()
+    74	
+    75	        pbar.set_postfix({
+    76	            "loss": f"{total_loss / max(total_num, 1):.4f}",
+    77	            "acc": f"{correct / max(total_num, 1):.4f}",
+    78	        })
+    79	
+    80	    return {
+    81	        "train_loss": total_loss / max(total_num, 1),
+    82	        "train_acc": correct / max(total_num, 1),
+    83	    }
+    84	
+    85	
+    86	def append_csv(path: str, row: Dict):
+    87	    ensure_dir(os.path.dirname(path))
+    88	    exists = os.path.exists(path)
+    89	
+    90	    with open(path, "a", newline="", encoding="utf-8") as f:
+    91	        writer = csv.DictWriter(f, fieldnames=list(row.keys()))
+    92	        if not exists:
+    93	            writer.writeheader()
+    94	        writer.writerow(row)
+    95	
+    96	
+    97	def main():
+    98	    args = parse_args()
+    99	    cfg = load_yaml(args.config)
+   100	
+   101	    if args.kc is not None:
+   102	        cfg["kc"] = args.kc
+   103	    if args.epochs is not None:
+   104	        cfg["epochs"] = args.epochs
+   105	    if args.batch_size is not None:
+   106	        cfg["batch_size"] = args.batch_size
+   107	    if args.lr is not None:
+   108	        cfg["lr"] = args.lr
+   109	
+   110	    set_seed(args.seed)
+   111	    device = get_device()
+   112	
+   113	    dataset_name = cfg["dataset"]
+   114	    model_name = cfg["model"]
+   115	    kc = int(cfg["kc"])
+   116	    target_labels = [int(x) for x in cfg["target_labels"][:kc]]
+   117	
+   118	    position_tag = {
+   119	        "fixed": "",
+   120	        "fixed_diverse": "_fdiv",
+   121	        "dynamic": "_dyn",
+   122	    }[args.position_mode]
+   123	
+   124	    run_name = (
+   125	        f"{dataset_name}_{model_name}_"
+   126	        f"{args.method}{position_tag}_pr{args.poison_rate}_kc{kc}_seed{args.seed}"
+   127	    )
+   128	
+   129	    output_dir = os.path.join(cfg["output_root"], run_name)
+   130	    ckpt_dir = os.path.join(cfg["checkpoint_root"], run_name)
+   131	
+   132	    ensure_dir(output_dir)
+   133	    ensure_dir(ckpt_dir)
+   134	
+   135	    print("=" * 80)
+   136	    print(f"Run name: {run_name}")
+   137	    print(f"Device: {device}")
+   138	    print(f"Config: {args.config}")
+   139	    print(f"Method: {args.method}")
+   140	    print(f"Poison rate: {args.poison_rate}")
+   141	    print(f"Seed: {args.seed}")
+   142	    print("=" * 80)
+   143	
+   144	    train_base, test_set, num_classes = get_datasets(
+   145	        dataset_name=dataset_name,
+   146	        data_root=cfg["data_root"],
+   147	        image_size=int(cfg["image_size"]),
+   148	    )
+   149	
+   150	    if args.position_mode == "fixed":
+   151	        configs = get_default_configs(
+   152	            kc=kc,
+   153	            target_labels=target_labels,
+   154	        )
+   155	    elif args.position_mode == "fixed_diverse":
+   156	        configs = get_fixed_diverse_configs(
+   157	            kc=kc,
+   158	            target_labels=target_labels,
+   159	            image_size=int(cfg["image_size"]),
+   160	            trigger_size=int(cfg["trigger_size"]),
+   161	            margin=int(cfg["trigger_margin"]),
+   162	        )
+   163	    else:
+   164	        configs = search_dynamic_configs(
+   165	            dataset=train_base,
+   166	            kc=kc,
+   167	            target_labels=target_labels,
+   168	            image_size=int(cfg["image_size"]),
+   169	            trigger_size=int(cfg["trigger_size"]),
+   170	            margin=int(cfg["trigger_margin"]),
+   171	            grid_size=int(args.search_grid),
+   172	            subset_size=int(args.search_subset),
+   173	            seed=int(args.seed),
+   174	        )
+   175	
+   176	    poison_splits = make_poison_index_splits(
+   177	        dataset=train_base,
+   178	        poison_rate=args.poison_rate,
+   179	        configs=configs,
+   180	        seed=args.seed,
+   181	    )
+   182	
+   183	    train_set = CCDTPoisonedDataset(
+   184	        base_dataset=train_base,
+   185	        configs=configs,
+   186	        poison_splits=poison_splits,
+   187	        method=args.method,
+   188	        image_size=int(cfg["image_size"]),
+   189	        trigger_size=int(cfg["trigger_size"]),
+   190	        trigger_margin=int(cfg["trigger_margin"]),
+   191	    )
+   192	
+   193	    poison_stats = {
+   194	        "clean_train_size": len(train_base),
+   195	        "expanded_train_size": len(train_set),
+   196	        "poison_record_size": len(train_set.records),
+   197	        "poison_splits": {str(k): len(v) for k, v in poison_splits.items()},
+   198	        "configs": configs,
+   199	    }
+   200	
+   201	    save_json(poison_stats, os.path.join(output_dir, "poison_stats.json"))
+   202	
+   203	    print("Poison stats:")
+   204	    print(poison_stats)
+   205	
+   206	    train_loader = DataLoader(
+   207	        train_set,
+   208	        batch_size=int(cfg["batch_size"]),
+   209	        shuffle=True,
+   210	        num_workers=int(cfg["num_workers"]),
+   211	        pin_memory=True,
+   212	        drop_last=False,
+   213	    )
+   214	
+   215	    test_loader = DataLoader(
+   216	        test_set,
+   217	        batch_size=int(cfg["batch_size"]),
+   218	        shuffle=False,
+   219	        num_workers=int(cfg["num_workers"]),
+   220	        pin_memory=True,
+   221	        drop_last=False,
+   222	    )
+   223	
+   224	    model = get_model(model_name, num_classes).to(device)
+   225	
+   226	    criterion = nn.CrossEntropyLoss()
+   227	    optimizer = torch.optim.SGD(
+   228	        model.parameters(),
+   229	        lr=float(cfg["lr"]),
+   230	        momentum=float(cfg["momentum"]),
+   231	        weight_decay=float(cfg["weight_decay"]),
+   232	    )
+   233	    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+   234	        optimizer,
+   235	        T_max=int(cfg["epochs"]),
+   236	    )
+   237	
+   238	    scaler = GradScaler(enabled=device.type == "cuda")
+   239	
+   240	    best_csg = -999.0
+   241	    best_metrics = None
+   242	    history_csv = os.path.join(output_dir, "history.csv")
+   243	
+   244	    start_time = time.time()
+   245	
+   246	    for epoch in range(1, int(cfg["epochs"]) + 1):
+   247	        train_metrics = train_one_epoch(
+   248	            model=model,
+   249	            loader=train_loader,
+   250	            optimizer=optimizer,
+   251	            criterion=criterion,
+   252	            device=device,
+   253	            scaler=scaler,
+   254	            epoch=epoch,
+   255	        )
+   256	
+   257	        scheduler.step()
+   258	
+   259	        do_eval = (
+   260	            epoch == 1
+   261	            or epoch % int(cfg["eval_every"]) == 0
+   262	            or epoch == int(cfg["epochs"])
+   263	        )
+   264	
+   265	        row = {
+   266	            "epoch": epoch,
+   267	            "lr": optimizer.param_groups[0]["lr"],
+   268	            **train_metrics,
+   269	        }
+   270	
+   271	        if do_eval:
+   272	            eval_metrics = evaluate_all(
+   273	                model=model,
+   274	                loader=test_loader,
+   275	                configs=configs,
+   276	                target_labels=target_labels,
+   277	                device=device,
+   278	                image_size=int(cfg["image_size"]),
+   279	                trigger_size=int(cfg["trigger_size"]),
+   280	                trigger_margin=int(cfg["trigger_margin"]),
+   281	            )
+   282	            row.update(eval_metrics)
+   283	
+   284	            print(
+   285	                f"[Eval epoch {epoch}] "
+   286	                f"CDA={eval_metrics['clean_acc']:.4f} "
+   287	                f"ValidASR={eval_metrics['valid_asr']:.4f} "
+   288	                f"WrongASR={eval_metrics['wrong_asr']:.4f} "
+   289	                f"SingleLeak={eval_metrics['single_leak']:.4f} "
+   290	                f"InvalidLeak={eval_metrics['invalid_leak']:.4f} "
+   291	                f"CSG={eval_metrics['csg']:.4f}"
+   292	            )
+   293	
+   294	            if eval_metrics["csg"] > best_csg:
+   295	                best_csg = eval_metrics["csg"]
+   296	                best_metrics = eval_metrics
+   297	                if os.environ.get("SAVE_BEST", "0") == "1":
+   298	                    torch.save(
+   299	                        {
+   300	                            "model": model.state_dict(),
+   301	                            "cfg": cfg,
+   302	                            "args": vars(args),
+   303	                            "configs": configs,
+   304	                            "metrics": eval_metrics,
+   305	                        },
+   306	                        os.path.join(ckpt_dir, "best.pt"),
+   307	                    )
+   308	
+   309	        append_csv(history_csv, row)
+   310	
+   311	    final_metrics = evaluate_all(
+   312	        model=model,
+   313	        loader=test_loader,
+   314	        configs=configs,
+   315	        target_labels=target_labels,
+   316	        device=device,
+   317	        image_size=int(cfg["image_size"]),
+   318	        trigger_size=int(cfg["trigger_size"]),
+   319	        trigger_margin=int(cfg["trigger_margin"]),
+   320	    )
+   321	
+   322	    torch.save(
+   323	        {
+   324	            "model": model.state_dict(),
+   325	            "cfg": cfg,
+   326	            "args": vars(args),
+   327	            "configs": configs,
+   328	            "metrics": final_metrics,
+   329	        },
+   330	        os.path.join(ckpt_dir, "last.pt"),
+   331	    )
+   332	
+   333	    summary = {
+   334	        "run_name": run_name,
+   335	        "dataset": dataset_name,
+   336	        "model": model_name,
+   337	        "method": args.method,
+   338	        "poison_rate": args.poison_rate,
+   339	        "seed": args.seed,
+   340	        "kc": kc,
+   341	        "position_mode": args.position_mode,
+   342	        "search_grid": args.search_grid,
+   343	        "search_subset": args.search_subset,
+   344	        "target_labels": target_labels,
+   345	        "final_metrics": final_metrics,
+   346	        "best_metrics": best_metrics,
+   347	        "elapsed_seconds": time.time() - start_time,
+   348	    }
+   349	
+   350	    save_json(summary, os.path.join(output_dir, "summary.json"))
+   351	
+   352	    print("=" * 80)
+   353	    print("Final metrics:")
+   354	    print(final_metrics)
+   355	    print("Best metrics:")
+   356	    print(best_metrics)
+   357	    print(f"Saved results to: {output_dir}")
+   358	    print(f"Saved checkpoints to: {ckpt_dir}")
+   359	    print("=" * 80)
+   360	
+   361	
+   362	if __name__ == "__main__":
+   363	    main()
+
+================ POISON.PY ================
+     1	import random
+     2	from dataclasses import dataclass
+     3	from typing import Dict, List
+     4	
+     5	from torch.utils.data import Dataset
+     6	
+     7	from .triggers import apply_trigger, apply_dual_trigger
+     8	from .utils import get_dataset_label
+     9	
+    10	
+    11	@dataclass
+    12	class PoisonRecord:
+    13	    base_index: int
+    14	    mode: str
+    15	    config_id: int
+    16	    target: int
+    17	    p1: str
+    18	    p2: str
+    19	    p1_alt: str = ""
+    20	    p2_alt: str = ""
+    21	
+    22	
+    23	def make_poison_index_splits(
+    24	    dataset: Dataset,
+    25	    poison_rate: float,
+    26	    configs: List[Dict],
+    27	    seed: int,
+    28	) -> Dict[int, List[int]]:
+    29	    rng = random.Random(seed)
+    30	    n_total = len(dataset)
+    31	    n_selected = int(round(poison_rate * n_total))
+    32	    n_per_config = max(1, n_selected // len(configs))
+    33	
+    34	    all_indices = list(range(n_total))
+    35	    rng.shuffle(all_indices)
+    36	
+    37	    used = set()
+    38	    splits = {}
+    39	
+    40	    for cfg in configs:
+    41	        target = int(cfg["target"])
+    42	        chosen = []
+    43	
+    44	        for idx in all_indices:
+    45	            if idx in used:
+    46	                continue
+    47	            y = get_dataset_label(dataset, idx)
+    48	            if int(y) == target:
+    49	                continue
+    50	
+    51	            chosen.append(idx)
+    52	            used.add(idx)
+    53	
+    54	            if len(chosen) >= n_per_config:
+    55	                break
+    56	
+    57	        if len(chosen) < n_per_config:
+    58	            raise RuntimeError(
+    59	                f"Not enough candidates for config {cfg['name']} target={target}"
+    60	            )
+    61	
+    62	        splits[int(cfg["config_id"])] = chosen
+    63	
+    64	    return splits
+    65	
+    66	
+    67	class CCDTPoisonedDataset(Dataset):
+    68	    def __init__(
+    69	        self,
+    70	        base_dataset: Dataset,
+    71	        configs: List[Dict],
+    72	        poison_splits: Dict[int, List[int]],
+    73	        method: str,
+    74	        image_size: int = 32,
+    75	        trigger_size: int = 4,
+    76	        trigger_margin: int = 2,
+    77	    ):
+    78	        self.base_dataset = base_dataset
+    79	        self.configs = configs
+    80	        self.poison_splits = poison_splits
+    81	        self.method = method
+    82	        self.image_size = image_size
+    83	        self.trigger_size = trigger_size
+    84	        self.trigger_margin = trigger_margin
+    85	
+    86	        self.records: List[PoisonRecord] = []
+    87	        self._build_records()
+    88	
+    89	    def _build_records(self) -> None:
+    90	        valid_methods = {"single", "naive_dual", "wo_invalid", "full"}
+    91	        if self.method not in valid_methods:
+    92	            raise ValueError(f"Unknown method={self.method}, valid={valid_methods}")
+    93	
+    94	        for cfg in self.configs:
+    95	            cid = int(cfg["config_id"])
+    96	            indices = self.poison_splits[cid]
+    97	
+    98	            for idx in indices:
+    99	                if self.method == "single":
+   100	                    self.records.append(PoisonRecord(
+   101	                        base_index=idx,
+   102	                        mode="single_t1_positive",
+   103	                        config_id=cid,
+   104	                        target=int(cfg["target"]),
+   105	                        p1=cfg["p1"],
+   106	                        p2=cfg["p2"],
+   107	                    ))
+   108	                    self.records.append(PoisonRecord(
+   109	                        base_index=idx,
+   110	                        mode="single_t2_positive",
+   111	                        config_id=cid,
+   112	                        target=int(cfg["target"]),
+   113	                        p1=cfg["p1"],
+   114	                        p2=cfg["p2"],
+   115	                    ))
+   116	
+   117	                elif self.method == "naive_dual":
+   118	                    self.records.append(PoisonRecord(
+   119	                        base_index=idx,
+   120	                        mode="valid_positive",
+   121	                        config_id=cid,
+   122	                        target=int(cfg["target"]),
+   123	                        p1=cfg["p1"],
+   124	                        p2=cfg["p2"],
+   125	                    ))
+   126	
+   127	                elif self.method == "wo_invalid":
+   128	                    self.records.append(PoisonRecord(
+   129	                        base_index=idx,
+   130	                        mode="single_t1_negative",
+   131	                        config_id=cid,
+   132	                        target=int(cfg["target"]),
+   133	                        p1=cfg["p1"],
+   134	                        p2=cfg["p2"],
+   135	                    ))
+   136	                    self.records.append(PoisonRecord(
+   137	                        base_index=idx,
+   138	                        mode="single_t2_negative",
+   139	                        config_id=cid,
+   140	                        target=int(cfg["target"]),
+   141	                        p1=cfg["p1"],
+   142	                        p2=cfg["p2"],
+   143	                    ))
+   144	                    self.records.append(PoisonRecord(
+   145	                        base_index=idx,
+   146	                        mode="valid_positive",
+   147	                        config_id=cid,
+   148	                        target=int(cfg["target"]),
+   149	                        p1=cfg["p1"],
+   150	                        p2=cfg["p2"],
+   151	                    ))
+   152	
+   153	                elif self.method == "full":
+   154	                    self.records.append(PoisonRecord(
+   155	                        base_index=idx,
+   156	                        mode="single_t1_negative",
+   157	                        config_id=cid,
+   158	                        target=int(cfg["target"]),
+   159	                        p1=cfg["p1"],
+   160	                        p2=cfg["p2"],
+   161	                    ))
+   162	                    self.records.append(PoisonRecord(
+   163	                        base_index=idx,
+   164	                        mode="single_t2_negative",
+   165	                        config_id=cid,
+   166	                        target=int(cfg["target"]),
+   167	                        p1=cfg["p1"],
+   168	                        p2=cfg["p2"],
+   169	                    ))
+   170	                    self.records.append(PoisonRecord(
+   171	                        base_index=idx,
+   172	                        mode="valid_positive",
+   173	                        config_id=cid,
+   174	                        target=int(cfg["target"]),
+   175	                        p1=cfg["p1"],
+   176	                        p2=cfg["p2"],
+   177	                    ))
+   178	
+   179	                    for other_cfg in self.configs:
+   180	                        other_cid = int(other_cfg["config_id"])
+   181	                        if other_cid == cid:
+   182	                            continue
+   183	
+   184	                        self.records.append(PoisonRecord(
+   185	                            base_index=idx,
+   186	                            mode="invalid_negative",
+   187	                            config_id=cid,
+   188	                            target=int(cfg["target"]),
+   189	                            p1=cfg["p1"],
+   190	                            p2=cfg["p2"],
+   191	                            p1_alt=cfg["p1"],
+   192	                            p2_alt=other_cfg["p2"],
+   193	                        ))
+   194	
+   195	    def __len__(self):
+   196	        return len(self.base_dataset) + len(self.records)
+   197	
+   198	    def __getitem__(self, index):
+   199	        if index < len(self.base_dataset):
+   200	            return self.base_dataset[index]
+   201	
+   202	        record = self.records[index - len(self.base_dataset)]
+   203	        x, y = self.base_dataset[record.base_index]
+   204	        y = int(y)
+   205	
+   206	        if record.mode == "single_t1_positive":
+   207	            x = apply_trigger(
+   208	                x, 1, record.p1,
+   209	                self.image_size, self.trigger_size, self.trigger_margin
+   210	            )
+   211	            y = int(record.target)
+   212	
+   213	        elif record.mode == "single_t2_positive":
+   214	            x = apply_trigger(
+   215	                x, 2, record.p2,
+   216	                self.image_size, self.trigger_size, self.trigger_margin
+   217	            )
+   218	            y = int(record.target)
+   219	
+   220	        elif record.mode == "single_t1_negative":
+   221	            x = apply_trigger(
+   222	                x, 1, record.p1,
+   223	                self.image_size, self.trigger_size, self.trigger_margin
+   224	            )
+   225	
+   226	        elif record.mode == "single_t2_negative":
+   227	            x = apply_trigger(
+   228	                x, 2, record.p2,
+   229	                self.image_size, self.trigger_size, self.trigger_margin
+   230	            )
+   231	
+   232	        elif record.mode == "valid_positive":
+   233	            x = apply_dual_trigger(
+   234	                x, record.p1, record.p2,
+   235	                self.image_size, self.trigger_size, self.trigger_margin
+   236	            )
+   237	            y = int(record.target)
+   238	
+   239	        elif record.mode == "invalid_negative":
+   240	            x = apply_dual_trigger(
+   241	                x, record.p1_alt, record.p2_alt,
+   242	                self.image_size, self.trigger_size, self.trigger_margin
+   243	            )
+   244	
+   245	        else:
+   246	            raise ValueError(f"Unknown poison mode: {record.mode}")
+   247	
+   248	        return x, y
+
+================ EVALUATE.PY ================
+     1	from typing import Dict, List
+     2	
+     3	import torch
+     4	from torch.utils.data import DataLoader
+     5	
+     6	from .triggers import apply_trigger, apply_dual_trigger
+     7	
+     8	
+     9	@torch.no_grad()
+    10	def evaluate_clean(
+    11	    model: torch.nn.Module,
+    12	    loader: DataLoader,
+    13	    device: torch.device,
+    14	) -> float:
+    15	    model.eval()
+    16	
+    17	    total = 0
+    18	    correct = 0
+    19	
+    20	    for x, y in loader:
+    21	        x = x.to(device, non_blocking=True)
+    22	        y = y.to(device, non_blocking=True)
+    23	
+    24	        logits = model(x)
+    25	        pred = logits.argmax(dim=1)
+    26	
+    27	        total += y.numel()
+    28	        correct += (pred == y).sum().item()
+    29	
+    30	    return correct / max(total, 1)
+    31	
+    32	
+    33	@torch.no_grad()
+    34	def evaluate_ccdt(
+    35	    model: torch.nn.Module,
+    36	    loader: DataLoader,
+    37	    configs: List[Dict],
+    38	    target_labels: List[int],
+    39	    device: torch.device,
+    40	    image_size: int = 32,
+    41	    trigger_size: int = 4,
+    42	    trigger_margin: int = 2,
+    43	) -> Dict[str, float]:
+    44	    model.eval()
+    45	
+    46	    target_set = set(int(t) for t in target_labels)
+    47	
+    48	    def prediction_in_target_set(pred: torch.Tensor) -> torch.Tensor:
+    49	        """Return whether each prediction belongs to any attack target."""
+    50	        hit = torch.zeros_like(pred, dtype=torch.bool)
+    51	        for target_value in target_set:
+    52	            hit |= pred == int(target_value)
+    53	        return hit
+    54	
+    55	    def label_outside_target_set(labels: torch.Tensor) -> torch.Tensor:
+    56	        """Legacy eligibility mask used only for diagnostic reporting."""
+    57	        mask = torch.ones_like(labels, dtype=torch.bool)
+    58	        for target_value in target_set:
+    59	            mask &= labels != int(target_value)
+    60	        return mask
+    61	
+    62	    # Cache the deterministic test batches and their clean predictions once.
+    63	    # This avoids recomputing the clean model output for every trigger layout.
+    64	    eval_batches = []
+    65	
+    66	    for x_cpu, y_cpu in loader:
+    67	        x_cpu = x_cpu.detach().cpu()
+    68	        y_cpu = y_cpu.detach().cpu()
+    69	
+    70	        clean_pred_cpu = (
+    71	            model(x_cpu.to(device, non_blocking=True))
+    72	            .argmax(dim=1)
+    73	            .detach()
+    74	            .cpu()
+    75	        )
+    76	
+    77	        eval_batches.append((x_cpu, y_cpu, clean_pred_cpu))
+    78	
+    79	    if not eval_batches:
+    80	        raise RuntimeError("Evaluation loader is empty.")
+    81	
+    82	    valid_asrs = []
+    83	    wrong_asrs = []
+    84	
+    85	    # Valid-configuration ASR and wrong-target ASR.
+    86	    for cfg in configs:
+    87	        target = int(cfg["target"])
+    88	        total = 0
+    89	        hit_target = 0
+    90	        hit_wrong_target = 0
+    91	
+    92	        for x_cpu, y_cpu, _ in eval_batches:
+    93	            mask = y_cpu != target
+    94	
+    95	            if mask.sum().item() == 0:
+    96	                continue
+    97	
+    98	            x = x_cpu[mask].to(device, non_blocking=True)
+    99	            y = y_cpu[mask].to(device, non_blocking=True)
+   100	
+   101	            x_bd = apply_dual_trigger(
+   102	                x,
+   103	                cfg["p1"],
+   104	                cfg["p2"],
+   105	                image_size,
+   106	                trigger_size,
+   107	                trigger_margin,
+   108	            )
+   109	
+   110	            pred = model(x_bd).argmax(dim=1)
+   111	
+   112	            total += y.numel()
+   113	            hit_target += (pred == target).sum().item()
+   114	
+   115	            wrong_targets = [
+   116	                int(t)
+   117	                for t in target_labels
+   118	                if int(t) != target
+   119	            ]
+   120	
+   121	            if wrong_targets:
+   122	                wrong_mask = torch.zeros_like(
+   123	                    pred,
+   124	                    dtype=torch.bool,
+   125	                )
+   126	
+   127	                for wrong_target in wrong_targets:
+   128	                    wrong_mask |= pred == wrong_target
+   129	
+   130	                hit_wrong_target += wrong_mask.sum().item()
+   131	
+   132	        valid_asrs.append(hit_target / max(total, 1))
+   133	        wrong_asrs.append(hit_wrong_target / max(total, 1))
+   134	
+   135	    # ------------------------------------------------------------------
+   136	    # Universal single-trigger leakage.
+   137	    #
+   138	    # A sample leaks when:
+   139	    #   1. the triggered prediction differs from its clean prediction; and
+   140	    #   2. the new prediction belongs to the attack-target set.
+   141	    #
+   142	    # This remains defined even when target_labels cover every class.
+   143	    # ------------------------------------------------------------------
+   144	    single_total = 0
+   145	    single_hit = 0
+   146	
+   147	    # Preserve the old conditional statistic for diagnosis and comparison.
+   148	    single_legacy_total = 0
+   149	    single_legacy_hit = 0
+   150	
+   151	    for cfg in configs:
+   152	        trigger_positions = [
+   153	            (1, cfg["p1"]),
+   154	            (2, cfg["p2"]),
+   155	        ]
+   156	
+   157	        for trigger_id, position in trigger_positions:
+   158	            for x_cpu, y_cpu, clean_pred_cpu in eval_batches:
+   159	                x = x_cpu.to(device, non_blocking=True)
+   160	
+   161	                x_bd = apply_trigger(
+   162	                    x,
+   163	                    trigger_id,
+   164	                    position,
+   165	                    image_size,
+   166	                    trigger_size,
+   167	                    trigger_margin,
+   168	                )
+   169	
+   170	                pred_cpu = (
+   171	                    model(x_bd)
+   172	                    .argmax(dim=1)
+   173	                    .detach()
+   174	                    .cpu()
+   175	                )
+   176	
+   177	                in_target = prediction_in_target_set(pred_cpu)
+   178	                changed = pred_cpu != clean_pred_cpu
+   179	                universal_hit = in_target & changed
+   180	
+   181	                single_total += y_cpu.numel()
+   182	                single_hit += universal_hit.sum().item()
+   183	
+   184	                legacy_mask = label_outside_target_set(y_cpu)
+   185	                single_legacy_total += legacy_mask.sum().item()
+   186	
+   187	                if legacy_mask.any():
+   188	                    single_legacy_hit += (
+   189	                        in_target[legacy_mask]
+   190	                        .sum()
+   191	                        .item()
+   192	                    )
+   193	
+   194	    # ------------------------------------------------------------------
+   195	    # Universal invalid-configuration leakage.
+   196	    #
+   197	    # An invalid pair leaks when it changes the clean prediction into any
+   198	    # attack target. This is well-defined for Kc equal to the class count.
+   199	    # ------------------------------------------------------------------
+   200	    invalid_total = 0
+   201	    invalid_hit = 0
+   202	
+   203	    invalid_legacy_total = 0
+   204	    invalid_legacy_hit = 0
+   205	
+   206	    for cfg_a in configs:
+   207	        for cfg_b in configs:
+   208	            if int(cfg_a["config_id"]) == int(cfg_b["config_id"]):
+   209	                continue
+   210	
+   211	            for x_cpu, y_cpu, clean_pred_cpu in eval_batches:
+   212	                x = x_cpu.to(device, non_blocking=True)
+   213	
+   214	                x_bd = apply_dual_trigger(
+   215	                    x,
+   216	                    cfg_a["p1"],
+   217	                    cfg_b["p2"],
+   218	                    image_size,
+   219	                    trigger_size,
+   220	                    trigger_margin,
+   221	                )
+   222	
+   223	                pred_cpu = (
+   224	                    model(x_bd)
+   225	                    .argmax(dim=1)
+   226	                    .detach()
+   227	                    .cpu()
+   228	                )
+   229	
+   230	                in_target = prediction_in_target_set(pred_cpu)
+   231	                changed = pred_cpu != clean_pred_cpu
+   232	                universal_hit = in_target & changed
+   233	
+   234	                invalid_total += y_cpu.numel()
+   235	                invalid_hit += universal_hit.sum().item()
+   236	
+   237	                legacy_mask = label_outside_target_set(y_cpu)
+   238	                invalid_legacy_total += legacy_mask.sum().item()
+   239	
+   240	                if legacy_mask.any():
+   241	                    invalid_legacy_hit += (
+   242	                        in_target[legacy_mask]
+   243	                        .sum()
+   244	                        .item()
+   245	                    )
+   246	
+   247	    if single_total == 0:
+   248	        raise RuntimeError(
+   249	            "Universal single-trigger evaluation has zero samples."
+   250	        )
+   251	
+   252	    if invalid_total == 0:
+   253	        raise RuntimeError(
+   254	            "Universal invalid-configuration evaluation has zero samples."
+   255	        )
+   256	
+   257	    valid_asr = sum(valid_asrs) / max(len(valid_asrs), 1)
+   258	    wrong_asr = max(wrong_asrs) if wrong_asrs else 0.0
+   259	
+   260	    single_leak = single_hit / single_total
+   261	    invalid_leak = invalid_hit / invalid_total
+   262	
+   263	    single_leak_legacy = (
+   264	        single_legacy_hit / single_legacy_total
+   265	        if single_legacy_total > 0
+   266	        else None
+   267	    )
+   268	
+   269	    invalid_leak_legacy = (
+   270	        invalid_legacy_hit / invalid_legacy_total
+   271	        if invalid_legacy_total > 0
+   272	        else None
+   273	    )
+   274	
+   275	    csg = valid_asr - max(
+   276	        wrong_asr,
+   277	        single_leak,
+   278	        invalid_leak,
+   279	    )
+   280	
+   281	    result = {
+   282	        "valid_asr": valid_asr,
+   283	        "wrong_asr": wrong_asr,
+   284	
+   285	        # Universal leakage metrics used by the revised CSG.
+   286	        "single_leak": single_leak,
+   287	        "invalid_leak": invalid_leak,
+   288	        "csg": csg,
+   289	
+   290	        # Metric definition/version metadata.
+   291	        "leakage_metric_version": 2,
+   292	
+   293	        # Raw counts make empty-set errors immediately visible.
+   294	        "single_hit": int(single_hit),
+   295	        "single_total": int(single_total),
+   296	        "invalid_hit": int(invalid_hit),
+   297	        "invalid_total": int(invalid_total),
+   298	
+   299	        # Original conditional metrics retained only for comparison.
+   300	        "single_leak_legacy": single_leak_legacy,
+   301	        "invalid_leak_legacy": invalid_leak_legacy,
+   302	        "single_legacy_total": int(single_legacy_total),
+   303	        "invalid_legacy_total": int(invalid_legacy_total),
+   304	    }
+   305	
+   306	    for i, value in enumerate(valid_asrs):
+   307	        result[f"valid_asr_c{i + 1}"] = value
+   308	
+   309	    return result
+   310	
+   311	
+   312	@torch.no_grad()
+   313	def evaluate_all(
+   314	    model: torch.nn.Module,
+   315	    loader: DataLoader,
+   316	    configs: List[Dict],
+   317	    target_labels: List[int],
+   318	    device: torch.device,
+   319	    image_size: int = 32,
+   320	    trigger_size: int = 4,
+   321	    trigger_margin: int = 2,
+   322	) -> Dict[str, float]:
+   323	    clean_acc = evaluate_clean(model, loader, device)
+   324	    ccdt = evaluate_ccdt(
+   325	        model=model,
+   326	        loader=loader,
+   327	        configs=configs,
+   328	        target_labels=target_labels,
+   329	        device=device,
+   330	        image_size=image_size,
+   331	        trigger_size=trigger_size,
+   332	        trigger_margin=trigger_margin,
+   333	    )
+   334	    ccdt["clean_acc"] = clean_acc
+   335	    return ccdt
+
+================ DATASETS.PY ================
+     1	from typing import Tuple
+     2	
+     3	import torchvision
+     4	import torchvision.transforms as T
+     5	from torch.utils.data import Dataset
+     6	
+     7	
+     8	def get_datasets(
+     9	    dataset_name: str,
+    10	    data_root: str,
+    11	    image_size: int = 32,
+    12	) -> Tuple[Dataset, Dataset, int]:
+    13	    name = dataset_name.lower()
+    14	
+    15	    if name == "cifar10":
+    16	        train_tf = T.Compose([
+    17	            T.RandomCrop(image_size, padding=4),
+    18	            T.RandomHorizontalFlip(),
+    19	            T.ToTensor(),
+    20	        ])
+    21	        test_tf = T.Compose([
+    22	            T.ToTensor(),
+    23	        ])
+    24	
+    25	        train_set = torchvision.datasets.CIFAR10(
+    26	            root=data_root,
+    27	            train=True,
+    28	            download=True,
+    29	            transform=train_tf,
+    30	        )
+    31	        test_set = torchvision.datasets.CIFAR10(
+    32	            root=data_root,
+    33	            train=False,
+    34	            download=True,
+    35	            transform=test_tf,
+    36	        )
+    37	        return train_set, test_set, 10
+    38	
+    39	    if name == "cifar100":
+    40	        train_tf = T.Compose([
+    41	            T.RandomCrop(image_size, padding=4),
+    42	            T.RandomHorizontalFlip(),
+    43	            T.ToTensor(),
+    44	        ])
+    45	        test_tf = T.Compose([
+    46	            T.ToTensor(),
+    47	        ])
+    48	
+    49	        train_set = torchvision.datasets.CIFAR100(
+    50	            root=data_root,
+    51	            train=True,
+    52	            download=True,
+    53	            transform=train_tf,
+    54	        )
+    55	        test_set = torchvision.datasets.CIFAR100(
+    56	            root=data_root,
+    57	            train=False,
+    58	            download=True,
+    59	            transform=test_tf,
+    60	        )
+    61	        return train_set, test_set, 100
+    62	
+    63	    if name == "gtsrb":
+    64	        train_tf = T.Compose([
+    65	            T.Resize((image_size, image_size)),
+    66	            T.RandomRotation(10),
+    67	            T.ToTensor(),
+    68	        ])
+    69	        test_tf = T.Compose([
+    70	            T.Resize((image_size, image_size)),
+    71	            T.ToTensor(),
+    72	        ])
+    73	
+    74	        train_set = torchvision.datasets.GTSRB(
+    75	            root=data_root,
+    76	            split="train",
+    77	            download=True,
+    78	            transform=train_tf,
+    79	        )
+    80	        test_set = torchvision.datasets.GTSRB(
+    81	            root=data_root,
+    82	            split="test",
+    83	            download=True,
+    84	            transform=test_tf,
+    85	        )
+    86	        return train_set, test_set, 43
+    87	
+    88	    raise ValueError(f"Unknown dataset: {dataset_name}")

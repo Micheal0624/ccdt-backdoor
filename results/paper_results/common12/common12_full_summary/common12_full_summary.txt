@@ -1,0 +1,49 @@
+COMMON12 FULL SUMMARY
+Expected runs:       36
+Detected runs:       36
+Expected categories: 108
+Detected categories: 108
+Expected grouped:    36
+Detected grouped:    36
+Expected pairs:      1296
+Detected pairs:      1296
+Issue count:         0
+READY_FOR_PAPER_SUMMARY: YES
+
+Grouped:
+cifar10 resnet18 Kc=4 seen_p1_unseen_p2 seeds=3 Leak=2.900±0.633 P95=5.650±3.792 Max=6.567±5.032 Change=5.428±0.796
+cifar10 resnet18 Kc=4 unseen_p1_seen_p2 seeds=3 Leak=4.279±1.592 P95=7.407±4.388 Max=8.463±4.984 Change=6.817±1.309
+cifar10 resnet18 Kc=4 unseen_p1_unseen_p2 seeds=3 Leak=4.136±0.391 P95=6.509±1.021 Max=6.993±0.819 Change=7.355±0.547
+cifar10 resnet18 Kc=8 seen_p1_unseen_p2 seeds=3 Leak=3.865±0.295 P95=4.481±0.352 Max=4.630±0.416 Change=4.416±0.379
+cifar10 resnet18 Kc=8 unseen_p1_seen_p2 seeds=3 Leak=4.366±0.603 P95=5.993±1.100 Max=6.367±1.591 Change=4.812±0.682
+cifar10 resnet18 Kc=8 unseen_p1_unseen_p2 seeds=3 Leak=5.584±0.869 P95=6.780±1.346 Max=7.020±1.519 Change=6.040±0.945
+cifar10 vgg11 Kc=4 seen_p1_unseen_p2 seeds=3 Leak=7.541±2.074 P95=11.865±2.279 Max=12.577±1.776 Change=14.717±2.544
+cifar10 vgg11 Kc=4 unseen_p1_seen_p2 seeds=3 Leak=10.773±2.451 P95=19.044±3.355 Max=19.437±3.166 Change=17.802±3.373
+cifar10 vgg11 Kc=4 unseen_p1_unseen_p2 seeds=3 Leak=15.289±3.887 P95=24.267±5.624 Max=24.740±5.977 Change=24.131±4.991
+cifar10 vgg11 Kc=8 seen_p1_unseen_p2 seeds=3 Leak=9.703±0.839 P95=13.055±1.981 Max=14.690±2.522 Change=10.753±0.811
+cifar10 vgg11 Kc=8 unseen_p1_seen_p2 seeds=3 Leak=16.063±3.218 P95=29.207±6.810 Max=31.920±7.729 Change=17.383±2.821
+cifar10 vgg11 Kc=8 unseen_p1_unseen_p2 seeds=3 Leak=21.944±3.273 P95=29.159±4.340 Max=29.790±4.547 Change=23.331±3.151
+cifar100 resnet18 Kc=4 seen_p1_unseen_p2 seeds=3 Leak=0.838±0.061 P95=1.440±0.352 Max=1.843±0.818 Change=15.495±0.758
+cifar100 resnet18 Kc=4 unseen_p1_seen_p2 seeds=3 Leak=0.726±0.154 P95=1.236±0.422 Max=1.423±0.548 Change=16.931±1.078
+cifar100 resnet18 Kc=4 unseen_p1_unseen_p2 seeds=3 Leak=1.055±0.178 P95=1.775±0.619 Max=1.997±0.726 Change=19.067±0.644
+cifar100 resnet18 Kc=8 seen_p1_unseen_p2 seeds=3 Leak=1.228±0.231 P95=1.587±0.302 Max=1.623±0.311 Change=15.215±0.578
+cifar100 resnet18 Kc=8 unseen_p1_seen_p2 seeds=3 Leak=1.309±0.163 P95=1.742±0.328 Max=1.813±0.266 Change=15.330±0.475
+cifar100 resnet18 Kc=8 unseen_p1_unseen_p2 seeds=3 Leak=1.372±0.160 P95=1.674±0.209 Max=1.753±0.250 Change=15.472±0.916
+cifar100 vgg11 Kc=4 seen_p1_unseen_p2 seeds=3 Leak=1.126±0.249 P95=1.676±0.712 Max=1.903±1.041 Change=30.921±2.116
+cifar100 vgg11 Kc=4 unseen_p1_seen_p2 seeds=3 Leak=2.658±1.652 P95=5.543±5.719 Max=8.933±11.220 Change=40.675±4.427
+cifar100 vgg11 Kc=4 unseen_p1_unseen_p2 seeds=3 Leak=3.012±1.190 P95=4.225±1.881 Max=4.953±2.530 Change=48.104±4.091
+cifar100 vgg11 Kc=8 seen_p1_unseen_p2 seeds=3 Leak=2.712±0.498 P95=4.289±1.296 Max=5.220±2.194 Change=28.966±0.286
+cifar100 vgg11 Kc=8 unseen_p1_seen_p2 seeds=3 Leak=4.439±0.597 P95=8.086±1.349 Max=8.843±1.802 Change=38.343±2.597
+cifar100 vgg11 Kc=8 unseen_p1_unseen_p2 seeds=3 Leak=7.472±1.795 P95=12.232±1.435 Max=14.283±2.688 Change=47.681±2.847
+gtsrb resnet18 Kc=4 seen_p1_unseen_p2 seeds=3 Leak=1.462±0.956 P95=3.690±2.041 Max=4.386±2.242 Change=5.761±0.332
+gtsrb resnet18 Kc=4 unseen_p1_seen_p2 seeds=3 Leak=2.419±1.130 P95=6.196±3.355 Max=6.756±3.339 Change=5.826±1.480
+gtsrb resnet18 Kc=4 unseen_p1_unseen_p2 seeds=3 Leak=6.368±7.464 P95=19.371±24.444 Max=26.263±35.363 Change=14.035±3.901
+gtsrb resnet18 Kc=8 seen_p1_unseen_p2 seeds=3 Leak=0.393±0.115 P95=1.020±0.409 Max=1.338±0.466 Change=1.885±0.136
+gtsrb resnet18 Kc=8 unseen_p1_seen_p2 seeds=3 Leak=1.126±1.180 P95=3.882±4.804 Max=4.310±5.103 Change=10.664±2.469
+gtsrb resnet18 Kc=8 unseen_p1_unseen_p2 seeds=3 Leak=1.329±0.131 P95=4.889±1.139 Max=5.907±1.247 Change=6.554±1.278
+gtsrb vgg11 Kc=4 seen_p1_unseen_p2 seeds=3 Leak=2.335±0.395 P95=9.947±1.937 Max=11.549±3.190 Change=11.723±0.827
+gtsrb vgg11 Kc=4 unseen_p1_seen_p2 seeds=3 Leak=3.624±0.535 P95=13.645±1.543 Max=24.555±2.089 Change=20.816±1.737
+gtsrb vgg11 Kc=4 unseen_p1_unseen_p2 seeds=3 Leak=1.615±0.643 P95=4.014±1.619 Max=4.542±2.051 Change=30.666±1.856
+gtsrb vgg11 Kc=8 seen_p1_unseen_p2 seeds=3 Leak=5.132±0.900 P95=21.581±6.286 Max=31.504±1.667 Change=10.442±1.649
+gtsrb vgg11 Kc=8 unseen_p1_seen_p2 seeds=3 Leak=5.889±0.628 P95=25.377±3.124 Max=49.884±6.769 Change=20.029±0.357
+gtsrb vgg11 Kc=8 unseen_p1_unseen_p2 seeds=3 Leak=10.529±2.272 P95=34.941±9.012 Max=38.873±11.173 Change=40.571±1.089

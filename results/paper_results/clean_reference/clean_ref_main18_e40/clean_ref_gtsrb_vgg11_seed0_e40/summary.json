@@ -1,0 +1,13 @@
+{
+  "dataset": "gtsrb",
+  "model": "vgg11",
+  "num_classes": 43,
+  "seed": 0,
+  "epochs": 40,
+  "batch_size": 128,
+  "num_workers": 4,
+  "lr": 0.01,
+  "clean_acc": 0.9267616785431513,
+  "clean_loss": 0.3041672456575969,
+  "ckpt": "paper_results/clean_reference/clean_ref_main18_e40/clean_ref_gtsrb_vgg11_seed0_e40/clean_classifier.pt"
+}

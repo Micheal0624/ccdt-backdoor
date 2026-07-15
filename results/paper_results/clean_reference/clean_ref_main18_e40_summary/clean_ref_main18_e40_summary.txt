@@ -1,0 +1,18 @@
+CLEAN REF MAIN18 E40 SUMMARY
+Expected runs: 18
+Status rows:   18
+Valid runs:    18
+Issue count:   0
+Required epochs:      40
+Required batch_size:  128
+Required num_workers: 4
+Required lr:          0.01
+READY_FOR_PAPER_SUMMARY: YES
+
+Grouped:
+cifar10 resnet18 n=3 Clean=90.253±0.639 Loss=0.3605±0.0420
+cifar10 vgg11 n=3 Clean=85.783±2.270 Loss=0.4836±0.0729
+cifar100 resnet18 n=3 Clean=65.780±0.583 Loss=1.6622±0.0307
+cifar100 vgg11 n=3 Clean=62.227±0.547 Loss=1.6503±0.0377
+gtsrb resnet18 n=3 Clean=94.336±1.490 Loss=0.2597±0.0701
+gtsrb vgg11 n=3 Clean=92.241±0.378 Loss=0.3189±0.0134

@@ -1,0 +1,7 @@
+dataset,model,status,log_path,start_time,end_time
+cifar10,resnet18,DONE,./logs_clean_reference/clean_ref_preflight/clean_ref_preflight_cifar10_resnet18.out,2026-06-18 14:42:07,2026-06-18 14:42:12
+cifar10,vgg11,DONE,./logs_clean_reference/clean_ref_preflight/clean_ref_preflight_cifar10_vgg11.out,2026-06-18 14:42:12,2026-06-18 14:42:18
+cifar100,resnet18,DONE,./logs_clean_reference/clean_ref_preflight/clean_ref_preflight_cifar100_resnet18.out,2026-06-18 14:42:18,2026-06-18 14:42:23
+cifar100,vgg11,DONE,./logs_clean_reference/clean_ref_preflight/clean_ref_preflight_cifar100_vgg11.out,2026-06-18 14:42:23,2026-06-18 14:42:28
+gtsrb,resnet18,DONE,./logs_clean_reference/clean_ref_preflight/clean_ref_preflight_gtsrb_resnet18.out,2026-06-18 14:42:28,2026-06-18 14:42:33
+gtsrb,vgg11,DONE,./logs_clean_reference/clean_ref_preflight/clean_ref_preflight_gtsrb_vgg11.out,2026-06-18 14:42:33,2026-06-18 14:42:38

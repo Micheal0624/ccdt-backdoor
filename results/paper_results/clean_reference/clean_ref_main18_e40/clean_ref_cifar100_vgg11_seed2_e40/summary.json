@@ -1,0 +1,13 @@
+{
+  "dataset": "cifar100",
+  "model": "vgg11",
+  "num_classes": 100,
+  "seed": 2,
+  "epochs": 40,
+  "batch_size": 128,
+  "num_workers": 4,
+  "lr": 0.01,
+  "clean_acc": 0.6247,
+  "clean_loss": 1.6339842420578004,
+  "ckpt": "paper_results/clean_reference/clean_ref_main18_e40/clean_ref_cifar100_vgg11_seed2_e40/clean_classifier.pt"
+}
